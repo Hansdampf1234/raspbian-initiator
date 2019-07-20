@@ -3,6 +3,7 @@
 # This is a tool I use for preparing a freshly baked Raspbian card for usage
 # For now, this script does
 #  - change the hostname to a name given as a parameter when calling the script
+#  - disable IPv6
 #  - add ssh file to the boot filesystem to enable ssh
 # We assume some things here:
 #  - FAT ("boot"-Partition) is mounted to /media/root/boot
