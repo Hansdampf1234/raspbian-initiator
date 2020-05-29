@@ -12,6 +12,7 @@ But it works with a Linux VM on Mac and Windows, of course.
 
 # Usage
 Just call the script:
+
 `$ ./raspbian-init.sh /path/to/img_file.img`
 
 # Practical Applications
@@ -24,5 +25,6 @@ But I personally solved that by creating some ansible playbooks which will be pu
 This script will ONLY do the things that are totally neccesary for the first boot.
 
 # ToDo:
-[ ] Download latest version of raspbian instead of using a local one.
-[ ] Make interactive version of the script.
+- [x] Initial version
+- [ ] Download latest version of raspbian instead of using a local one.
+- [ ] Make interactive version of the script.
