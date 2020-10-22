@@ -69,7 +69,10 @@ echo "Mount of boot: $?"
 touch "$BOOT/ssh"
 ls -l "$BOOT/ssh"
 
-#umount $BOOT
+#4) add settings to enable docker runtime
+echo -n "cgroup_enable=memory cgroup_memory=1 swapaccount=1 " | cat - "$BOOT/cmdline.txt" > /tmp/temp && mv /tmp/temp cmdline.txt
+
+umount $BOOT
 
 parts=(${IMAGEFILE//-/ })
 
