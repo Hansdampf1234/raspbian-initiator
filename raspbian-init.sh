@@ -69,7 +69,7 @@ echo "Mount of boot: $?"
 touch "$BOOT/ssh"
 ls -l "$BOOT/ssh"
 
-umount $BOOT
+#umount $BOOT
 
 parts=(${IMAGEFILE//-/ })
 
