@@ -4,35 +4,38 @@
 
 OLDHOSTNAME=raspberrypi
 NEWHOSTNAME=$1
-BOOT="/media/iso/boot"
-ROOTFS="/media/iso/rootfs"
+BOOT="/media/benni/boot"
+ROOTFS="/media/benni/rootfs"
 DEST="/media/TEMPORARY"
-ZIPFILE=$2
+ISOFILE=$2
 DATUM=`date -I`
 SRCDIR=""
 
 if [[ ! ( #any of the following are NOT true
     -d "$DEST" &&
     -n "$NEWHOSTNAME" &&
-    -f "$ZIPFILE" &&
-    $(sudo id -u) -eq 0 &&
-    $(sudo id -g) -eq 0
+    -f "$ISOFILE" &&
+    $(id -u) -eq 0 &&
+    $(id -g) -eq 0
 ) ]];
 then
     echo "   Usage: $(basename "$0") new_hostname zip_file"
-    echo "   Please ensure that target dir $DEST and specified ZIP-File $ZIPFILE are present!"
+    echo "   Please ensure that target dir $DEST and specified ISO-File $ISOFILE are present!"
     echo "   Must run as root (id 0, group 0)"
     exit;
 fi
 
 
 # Task: $ unzip <zip>
-echo "-------"
-echo "---------------------- unpacking image -------------------------"
-echo "-------"
+# 2022-08-22: removed this step as they now package xz files, which, as it seems, can not be unpacked to a specific directory. Please unpack the download before starting the script!
+#echo "-------"
+#echo "---------------------- unpacking image -------------------------"
+#echo "-------"
 rm -f /tmp/*.img
-unzip $ZIPFILE -d /tmp/
-SRCDIR=`dirname $ZIPFILE`
+#unzip $ZIPFILE -d /tmp/
+#xz -dkv $ZIPFILE
+SRCDIR=`dirname $ISOFILE`
+cp -v $ISOFILE /tmp/
 
 if [ ! -d "$BOOT" ]
   then mkdir -p $BOOT
@@ -90,7 +93,11 @@ touch "$BOOT/ssh"
 ls -l "$BOOT/ssh"
 
 #4) add settings to enable docker runtime
-echo -n "cgroup_enable=memory cgroup_memory=1 swapaccount=1 " | cat - "$BOOT/cmdline.txt" > /tmp/temp && mv /tmp/temp cmdline.txt
+echo -n "cgroup_enable=memory cgroup_memory=1 swapaccount=1 " | cat - "$BOOT/cmdline.txt" > /tmp/temp && mv /tmp/temp $BOOT/cmdline.txt
+
+#5) Add temporary password for pi user
+# encryption is done by: $ echo "raspberry" | openssl passwd -6 -stdin
+echo -n "pi:$6$slwYjEYyo9Y5Wwo2$/HKR38F86HMRGfgR/ABppwrQlac4cfmydqollqlhANm5f69jr5L5W0cru9dwAMJR.stvXj3u/jACWBO8t7nfV/" > $BOOT/userconf.txt
 
 echo "-------"
 echo "---------------------- Un-mounting BOOT partition --------------"
