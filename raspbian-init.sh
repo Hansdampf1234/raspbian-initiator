@@ -93,7 +93,7 @@ touch "$BOOT/ssh"
 ls -l "$BOOT/ssh"
 
 #4) add settings to enable docker runtime
-echo -n "cgroup_enable=memory cgroup_memory=1 swapaccount=1 " | cat - "$BOOT/cmdline.txt" > /tmp/temp && mv /tmp/temp $BOOT/cmdline.txt
+echo -n "cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1 " | cat - "$BOOT/cmdline.txt" > /tmp/temp && mv /tmp/temp $BOOT/cmdline.txt
 
 #5) Add temporary password for pi user
 # encryption is done by: $ echo "raspberry" | openssl passwd -6 -stdin
