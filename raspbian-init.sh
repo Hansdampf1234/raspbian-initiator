@@ -94,8 +94,9 @@ touch "$BOOT/ssh"
 ls -l "$BOOT/ssh"
 if [ $WPA != "" ]
 then
-    echo -n "Copying WiFi config $WPA to SD-Card"
+    echo "Copying WiFi config $WPA to SD-Card"
     cp $WPA $BOOT/wpa_supplicant.conf
+    ls -l "$BOOT/wpa_supplicant.conf"
 fi
    
 
