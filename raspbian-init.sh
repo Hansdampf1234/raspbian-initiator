@@ -92,7 +92,7 @@ echo "-------"
 #3) add ssh file to boot filesystem
 touch "$BOOT/ssh"
 ls -l "$BOOT/ssh"
-if [ $WPA != "" ]
+if [ ! -z $WPA ]
 then
     echo "Copying WiFi config $WPA to SD-Card"
     cp $WPA $BOOT/wpa_supplicant.conf
