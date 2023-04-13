@@ -21,7 +21,7 @@ if [[ ! ( #any of the following are NOT true
     $(id -g) -eq 0
 ) ]];
 then
-    echo "   Usage: $(basename "$0") new_hostname zip_file [-w path-to-wpa_supplicant.conf]"
+    echo "   Usage: $(basename "$0") new_hostname zip_file [path-to-wpa_supplicant.conf]"
     echo "   Please ensure that target dir $DEST and specified ISO-File $ISOFILE are present!"
     echo "   Must run as root (id 0, group 0)"
     exit;
