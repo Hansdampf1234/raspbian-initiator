@@ -107,7 +107,9 @@ echo -n "cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1
 
 #5) Add temporary password for pi user
 # encryption is done by: $ echo "raspberry" | openssl passwd -6 -stdin
-echo -n "pi:$6$slwYjEYyo9Y5Wwo2$/HKR38F86HMRGfgR/ABppwrQlac4cfmydqollqlhANm5f69jr5L5W0cru9dwAMJR.stvXj3u/jACWBO8t7nfV/" > $BOOT/userconf.txt
+PASS=`echo "pi" | openssl passwd -6 -stdin`
+echo "Adding password \"pi\" to the user pi"
+echo -n "pi:$PASS" > $BOOT/userconf.txt
 
 echo "-------"
 echo "---------------------- Un-mounting BOOT partition --------------"
