@@ -4,12 +4,14 @@
 
 OLDHOSTNAME=raspberrypi
 NEWHOSTNAME=$1
-BOOT="/media/benni/boot"
-ROOTFS="/media/benni/rootfs"
-DEST="/media/TEMPORARY"
+BOOT="./mount/boot"
+ROOTFS="./mount/rootfs"
+DEST="./mount"
+TMPFS="./mount/tmp"
 ISOFILE=$2
 DATUM=`date -I`
 SRCDIR=""
+WPA=$3
 
 if [[ ! ( #any of the following are NOT true
     -d "$DEST" &&
@@ -19,7 +21,7 @@ if [[ ! ( #any of the following are NOT true
     $(id -g) -eq 0
 ) ]];
 then
-    echo "   Usage: $(basename "$0") new_hostname zip_file"
+    echo "   Usage: $(basename "$0") new_hostname zip_file [-w path-to-wpa_supplicant.conf]"
     echo "   Please ensure that target dir $DEST and specified ISO-File $ISOFILE are present!"
     echo "   Must run as root (id 0, group 0)"
     exit;
@@ -31,11 +33,10 @@ fi
 #echo "-------"
 #echo "---------------------- unpacking image -------------------------"
 #echo "-------"
-rm -f /tmp/*.img
 #unzip $ZIPFILE -d /tmp/
 #xz -dkv $ZIPFILE
 SRCDIR=`dirname $ISOFILE`
-cp -v $ISOFILE /tmp/
+cp -v $ISOFILE $TMPFS
 
 if [ ! -d "$BOOT" ]
   then mkdir -p $BOOT
@@ -45,9 +46,9 @@ if [ ! -d "$ROOTFS" ]
   then mkdir -p $ROOTFS
 fi
 
-IMAGE=`ls /tmp/*.img`
+IMAGE=`ls $TMPFS/*.img`
 IMAGEFILE=`basename $IMAGE`
-MD5=`md5sum /tmp/*.img`
+MD5=`md5sum $TMPFS/*.img`
 #echo "MD5Sum: $MD5"
 
 STARTSECTOR_BOOT=`awk -F 'startsector' '{print $2}' <<< \`file $IMAGE\` | cut -d "," -f1 | xargs`
@@ -91,9 +92,13 @@ echo "-------"
 #3) add ssh file to boot filesystem
 touch "$BOOT/ssh"
 ls -l "$BOOT/ssh"
+if [ $WPA != "" ]
+   then cp $WPA $BOOT/wpa_supplicant.conf
+fi
+   
 
 #4) add settings to enable docker runtime
-echo -n "cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1 " | cat - "$BOOT/cmdline.txt" > /tmp/temp && mv /tmp/temp $BOOT/cmdline.txt
+echo -n "cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1 " | cat - "$BOOT/cmdline.txt" > $TMPFS/cmdline.txt.temp && mv $TMPFS/cmdline.txt.temp $BOOT/cmdline.txt
 
 #5) Add temporary password for pi user
 # encryption is done by: $ echo "raspberry" | openssl passwd -6 -stdin
