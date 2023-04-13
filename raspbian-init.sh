@@ -97,6 +97,8 @@ then
     echo "Copying WiFi config $WPA to SD-Card"
     cp $WPA $BOOT/wpa_supplicant.conf
     ls -l "$BOOT/wpa_supplicant.conf"
+else
+    echo "No WiFi config added."
 fi
    
 
